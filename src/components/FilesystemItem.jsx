@@ -3,7 +3,7 @@ import { DocumentIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 
 function FilesystemItem({ node: node }) {
-  let [isOpen, setIsOpen] = useState(false);
+  let [isOpen, setIsOpen] = useState(true);
   return (
     <li className="my-1.5" key={node.name}>
       <span className="flex items-center gap-1.5">
@@ -28,7 +28,7 @@ function FilesystemItem({ node: node }) {
       {isOpen && (
         <ul className="pl-6">
           {node.nodes?.map((node) => (
-            <FilesystemItem node={node} key={node.name} />
+            <FilesystemItem node={node} key={node.id} />
           ))}
         </ul>
       )}
