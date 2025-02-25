@@ -1,38 +1,57 @@
 import { ChevronRightIcon, FolderIcon } from "@heroicons/react/24/solid";
-import { DocumentIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import NodeContent from "./NodeContent";
+import { useState, useEffect } from "react";
 
-function FilesystemItem({ node: node }) {
-  let [isOpen, setIsOpen] = useState(true);
+function FilesystemItem({ node, onNodeClick }) {
+  if (!node) return null;
+
+  const storageKey = `isOpen-${node.id}`;
+  const [isOpen, setIsOpen] = useState(() => {
+    const savedState = localStorage.getItem(storageKey);
+    return savedState ? JSON.parse(savedState) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(isOpen));
+  }, [isOpen, storageKey]);
+
   return (
-    <li className="my-1.5" key={node.name}>
+    <li className="my-1.5">
       <span className="flex items-center gap-1.5">
         {node.nodes && node.nodes.length > 0 && (
-          <button onClick={() => setIsOpen(!isOpen)}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
+          >
             <ChevronRightIcon
               className={`size-4 text-gray-500 ${isOpen ? "rotate-90" : ""}`}
             />
           </button>
         )}
         {node.nodes ? (
-          <FolderIcon
-            className={`size-6 text-sky-500 ${
-              node.nodes.length === 0 ? "ml-[22px]" : ""
-            }`}
-          />
+          <>
+            <FolderIcon className="size-6 text-sky-500" />
+            {node.name}
+          </>
         ) : (
-          <DocumentIcon className="ml-[22px] size-6 text-gray-500" />
+          <NodeContent node={node} onClick={onNodeClick} />
         )}
-        {node.name}
       </span>
-      {isOpen && (
+      {isOpen && node.nodes && (
         <ul className="pl-6">
-          {node.nodes?.map((node) => (
-            <FilesystemItem node={node} key={node.id} />
+          {node.nodes.map((childNode) => (
+            <FilesystemItem
+              node={childNode}
+              key={childNode.id}
+              onNodeClick={onNodeClick}
+            />
           ))}
         </ul>
       )}
     </li>
   );
 }
+
 export default FilesystemItem;
