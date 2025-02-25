@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import FilesystemItem from "./components/FilesystemItem.jsx";
 import NodeContentCard from "./components/NodeContentCard.jsx";
+import { Bars3Icon } from "@heroicons/react/24/solid";
 
 function App() {
   const [nodes, setNodes] = useState([]);
   const [nodeContents, setNodeContents] = useState([]);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [menuOpen, setMenuOpen] = useState([]);
 
   useEffect(() => {
     fetch("/nodes.json")
@@ -42,25 +44,44 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Linke Spalte */}
-      <div className="w-1/3 p-4 border-r">
-        <ul>
-          <li className="my-1.5">
-            <ul className="pl-6">
-              {nodes.map((node) => (
-                <FilesystemItem
-                  node={node}
-                  key={node.id}
-                  onNodeClick={handleNodeClick}
-                />
-              ))}
-            </ul>
-          </li>
-        </ul>
+    <div className="flex h-screen relative">
+      {/* Menü-Button oben links */}
+      <button
+        className="absolute top-1 left-1 bg-gray-600 hover:bg-gray-500 p-2 rounded"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        <Bars3Icon className="h-5 w-5 text-white" />
+      </button>
+
+      {/* Menü (einklappbar) */}
+      <div
+        className={`${
+          menuOpen ? "w-1/4" : "w-12"
+        } transition-all duration-300 overflow-hidden bg-gray-200 text-black p-4 `}
+      >
+        {menuOpen && (
+          <ul>
+            <li className="my-1.5">
+              <ul className="pl-10">
+                {nodes.map((node) => (
+                  <FilesystemItem
+                    node={node}
+                    key={node.id}
+                    onNodeClick={handleNodeClick}
+                  />
+                ))}
+              </ul>
+            </li>
+          </ul>
+        )}
       </div>
-      {/* Rechte Spalte */}
-      <div className="w-2/3 p-4">
+
+      {/* Content */}
+      <div
+        className={`${
+          menuOpen ? "w-3/4" : "w-full"
+        } transition-all duration-300 p-4 bg-gray-400`}
+      >
         {selectedNode ? (
           <NodeContentCard node={selectedNode} />
         ) : (

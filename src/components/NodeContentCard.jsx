@@ -24,7 +24,7 @@ function NodeContentCard({ node }) {
   };
 
   return (
-    <div className="relative p-4 border shadow-lg rounded-lg">
+    <div className="relative p-4  shadow-lg rounded-lg bg-gray-200">
       {/* Icon oben rechts */}
       <div className="absolute top-3 right-3 ">{getIcon()}</div>
       <h2 className="text-lg font-bold mb-4">{node.name}</h2>

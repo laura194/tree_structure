@@ -32,7 +32,7 @@ function FilesystemItem({ node, onNodeClick }) {
         )}
         {node.nodes ? (
           <>
-            <FolderIcon className="size-6 text-sky-500" />
+            <FolderIcon className="size-6 text-gray-700" />
             {node.name}
           </>
         ) : (
